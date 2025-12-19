@@ -1,38 +1,32 @@
 <template>
-  <div class="h-screen flex flex-col bg-slate-950">
+  <div class="flex flex-col bg-slate-950">
     <!-- Header -->
     <searchBar @citySelected="handleCityChange" />
 
     <!-- Body -->
     <div class="flex flex-1 overflow-hidden">
-      <!-- Sidebar 
-      <sideBar @changeView="activeView = $event" />
--->
-<sideBar />
-      <!-- Main Content 
-      <mainPage
-        :city="selectedCity"
-        :view="activeView"
-      />
-      -->
-      <mainPage />
+      <!-- Added: Sidebar component for navigation between views -->
+      <sideBar />
+      <!-- Added: Router view to display the current route component (Today, Hourly, Monthly, or Radar) -->
+      <router-view />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue"
-
+import { useRouter, useRoute } from "vue-router"
 import searchBar from "@/components/searchBar.vue"
 import sideBar from "@/components/sideBar.vue"
-import mainPage from "@/components/mainPage.vue"
 
-// Global state
-const selectedCity = ref("Monrovia") // default city
-const activeView = ref("today")
+// Added: Get router and route instances for navigation
+const router = useRouter()
+const route = useRoute()
 
+// Added: Handle city change by navigating to current route with new city parameter
 const handleCityChange = (city) => {
-  selectedCity.value = city
+  const cityParam = city || "Monrovia"
+  // Navigate to current route with new city, or default to today if no route
+  const currentRouteName = route.name || "today"
+  router.push({ name: currentRouteName, params: { city: cityParam } })
 }
-console.log(handleCityChange)
 </script>

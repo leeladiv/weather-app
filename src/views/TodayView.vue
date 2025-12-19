@@ -10,7 +10,6 @@
       </p>
     </div>
 
-
     <!-- Weather Summary -->
     <div v-if="weather" class="mt-auto pt-6 border-t border-slate-700">
       <p class="text-sm text-slate-400">Now</p>
@@ -33,9 +32,8 @@
       {{ error }}
     </p>
 
-
     <!-- TODAY -->
-    <section v-if="weather && view === 'today'" class="space-y-6">
+    <section v-if="weather" class="space-y-6">
       <div class="flex items-center gap-8 bg-slate-900 p-6 rounded-xl">
         <img
           :src="iconUrl(weather.list[0].weather[0].icon)"
@@ -85,91 +83,32 @@
         </div>
       </div>
     </section>
-
-    <!-- HOURLY -->
-    <section v-if="weather && view === 'hourly'">
-      <h2 class="text-xl font-semibold mb-4">Hourly Forecast</h2>
-
-      <div class="flex gap-4 overflow-x-auto">
-        <div
-          v-for="hour in hourlyForecast"
-          :key="hour.dt"
-          class="min-w-[120px] bg-slate-900 rounded-lg p-4 text-center"
-        >
-          <p class="text-sm text-slate-400">
-            {{ formatHour(hour.dt_txt) }}
-          </p>
-
-          <img
-            :src="iconUrl(hour.weather[0].icon)"
-            class="mx-auto w-10 h-10"
-          />
-
-          <p class="text-xl font-semibold">
-            {{ Math.round(hour.main.temp) }}°
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- MONTHLY (Daily Forecast) -->
-    <section v-if="weather && view === 'monthly'">
-      <h2 class="text-xl font-semibold mb-4">5-Day Forecast</h2>
-
-      <div class="grid md:grid-cols-5 gap-4">
-        <div
-          v-for="day in dailyForecast"
-          :key="day.date"
-          class="bg-slate-900 rounded-xl p-6 text-center"
-        >
-          <p class="font-semibold">
-            {{ day.day }}
-          </p>
-
-          <img
-            :src="iconUrl(day.icon)"
-            class="mx-auto w-14 h-14 my-2"
-          />
-
-          <p class="text-lg">
-            {{ Math.round(day.max) }}°
-          </p>
-
-          <p class="text-slate-400 text-sm">
-            {{ Math.round(day.min) }}°
-          </p>
-        </div>
-      </div>
-    </section>
-
-
   </main>
 </template>
 
 <script setup>
 import { computed, onMounted, watch } from "vue"
+import { useRoute } from "vue-router"
 import useWeather from "@/composables/weather.data.js"
 
-const props = defineProps({
-  city: String,
-  view: String
-})
-
+// Added: Get city from route params to fetch weather data for the selected city
+const route = useRoute()
 const { weather, loading, error, fetchWeatherByCity } = useWeather()
 
+// Added: Fetch weather data on mount and when city changes
 onMounted(() => {
-  fetchWeatherByCity(props.city || "Monrovia")
+  const city = route.params.city || "Monrovia"
+  fetchWeatherByCity(city)
 })
-console.log(loading)
-console.log(error)
 
 watch(
-  () => props.city,
+  () => route.params.city,
   (newCity) => {
     if (newCity) fetchWeatherByCity(newCity)
   }
 )
 
+// Added: Computed property to format the current date
 const formattedDate = computed(() =>
   new Date().toLocaleDateString(undefined, {
     weekday: "long",
@@ -178,11 +117,7 @@ const formattedDate = computed(() =>
   })
 )
 
-const hourlyForecast = computed(() =>
-  weather.value?.list.slice(0, 8) || []
-)
-
-// Group forecast by day
+// Added: Group forecast by day to show 5-day forecast
 const dailyForecast = computed(() => {
   if (!weather.value) return []
 
@@ -210,10 +145,7 @@ const dailyForecast = computed(() => {
   return Object.values(days).slice(0, 5)
 })
 
-const formatHour = (date) =>
-  new Date(date).toLocaleTimeString([], { hour: "numeric" })
-  console.log(formatHour)
-
+// Added: Helper function to get weather icon URL from OpenWeatherMap
 const iconUrl = (icon) =>
   `https://openweathermap.org/img/wn/${icon}@2x.png`
 </script>

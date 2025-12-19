@@ -1,5 +1,5 @@
 import './assets/main.css'
-import "leaflet/dist/leaflet.css"
+// Removed: Leaflet CSS import since we're no longer using Leaflet for radar view
 
 import { createApp } from 'vue'
 import App from './App.vue'
