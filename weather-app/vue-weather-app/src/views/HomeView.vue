@@ -1,9 +1,11 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+import searchBar from '@/components/searchBar.vue';
+import weatherCard from '@/components/weatherCard.vue';
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <searchBar />
+    <weatherCard />
   </main>
 </template>
