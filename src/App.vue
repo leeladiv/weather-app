@@ -1,14 +1,22 @@
 <template>
-  <div class="flex flex-col bg-slate-950">
+  <div class="flex flex-col w-full bg-slate-950">
+    
     <!-- Header -->
     <searchBar @citySelected="handleCityChange" />
-
+    
+     <button 
+    @click="isSidebarOpen = true" 
+    class="md:hidden p-2 items-start flex text-white z-50">  ☰ 
+    </button>
     <!-- Body -->
     <div class="flex flex-1 overflow-hidden">
+      
       <!--Sidebar component for navigation between views -->
       <sideBar 
       :mobileOpen="isSidebarOpen" 
-      @close="isSidebarOpen = false" />
+      @close="isSidebarOpen = false"
+       />
+      
       
       <!-- Router view to display the current route component (Today, Hourly, Monthly, or Radar) -->
       <router-view />
@@ -18,6 +26,7 @@
 
 <script setup>
 import { useRouter, useRoute } from "vue-router"
+import { ref } from "vue"
 import searchBar from "@/components/searchBar.vue"
 import sideBar from "@/components/sideBar.vue"
 

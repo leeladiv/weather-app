@@ -4,12 +4,10 @@
     <div class="flex justify-between items-center">
      <h1 class="text-xl font-bold whitespace-nowrap">
       Weather</h1>
-
-        <!-- Close Button (Visible only on mobile) -->
-      <button @click="$emit('close')" class="md:hidden text-gray-400 hover:text-white">
-        ✕
-      </button>
     </div>
+
+            <!-- Close Button (Visible only on mobile) -->
+    <button @click="isSidebarOpen = !isSidebarOpen" class="md:hidden text-white">☰</button>
 
     <nav class="flex flex-col space-y-2">
       <button
@@ -28,9 +26,9 @@
 
     <!-- New: Overlay backdrop for mobile (closes sidebar when clicked) -->
   <div 
-    v-if="mobileOpen" 
+    v-if="isSidebarOpen" 
     @click="$emit('close')"
-    class="fixed inset-0 bg-black/50 z-40 md:hidden"
+    class="fixed inset-0 bg-white/50 z-40 md:hidden"
   ></div>
 </template>
 
@@ -40,7 +38,7 @@ import { useRouter, useRoute } from "vue-router"
 
 // Receive the prop from App.vue
 defineProps({
-  mobileOpen: Boolean
+  isSidebarOpen: Boolean
 })
 
 //Define emits to tell App.vue to close the menu

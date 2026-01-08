@@ -1,5 +1,5 @@
 <template>
-  <header class="w-full bg-slate-900 ml-[30%] text-white px-6 py-4 flex items-center gap-4">
+  <header class=" ml-[30%] text-white px-4 py-6 flex items-center gap-4">
 
     <!-- Search -->
     <div class="relative w-full max-w-md">
