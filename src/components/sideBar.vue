@@ -1,13 +1,17 @@
 <template>
-  <aside class="w-56 bg-slate-900 text-white hidden md:flex flex-col p-4 space-y-4">
+<aside
+  class="fixed md:static inset-y-0 left-0 z-50 w-56 bg-slate-900 text-white flex flex-col p-4 space-y-4
+  transform transition-transform duration-300 md:translate-x-0"
+  :class="mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+>
         <!-- App Title -->
     <div class="flex justify-between items-center">
      <h1 class="text-xl font-bold whitespace-nowrap">
       Weather</h1>
     </div>
 
-            <!-- Close Button (Visible only on mobile) -->
-    <button @click="isSidebarOpen = !isSidebarOpen" class="md:hidden text-white">☰</button>
+   <!-- Close Button (Visible only on mobile) -->
+    <button @click="emit('close')" class="md:hidden text-white"> ✕</button>
 
     <nav class="flex flex-col space-y-2">
       <button
@@ -26,7 +30,7 @@
 
     <!-- New: Overlay backdrop for mobile (closes sidebar when clicked) -->
   <div 
-    v-if="isSidebarOpen" 
+    v-if="mobileOpen" 
     @click="$emit('close')"
     class="fixed inset-0 bg-white/50 z-40 md:hidden"
   ></div>
@@ -38,7 +42,7 @@ import { useRouter, useRoute } from "vue-router"
 
 // Receive the prop from App.vue
 defineProps({
-  isSidebarOpen: Boolean
+  mobileOpen: Boolean
 })
 
 //Define emits to tell App.vue to close the menu
