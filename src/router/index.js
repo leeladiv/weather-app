@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+
 
 // Added: Router configuration with routes for Today, Hourly, Monthly, and Radar views
 const router = createRouter({
@@ -9,11 +9,6 @@ const router = createRouter({
     {
       path: '/',
       redirect: { name: 'today', params: { city: 'Monrovia' } }
-    },
-    {
-      path: '/home',
-      name: 'home',
-      component: HomeView,
     },
   
     // Added: Route for Today view with optional city parameter

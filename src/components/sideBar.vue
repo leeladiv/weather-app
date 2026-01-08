@@ -1,9 +1,16 @@
 <template>
-  <aside class="w-56 bg-slate-900 text-white flex flex-col p-4 space-y-4">
+  <aside class="w-56 bg-slate-900 text-white hidden md:flex flex-col p-4 space-y-4">
         <!-- App Title -->
-    <h1 class="text-xl font-bold whitespace-nowrap">
-      Weather
-    </h1>
+    <div class="flex justify-between items-center">
+     <h1 class="text-xl font-bold whitespace-nowrap">
+      Weather</h1>
+
+        <!-- Close Button (Visible only on mobile) -->
+      <button @click="$emit('close')" class="md:hidden text-gray-400 hover:text-white">
+        ✕
+      </button>
+    </div>
+
     <nav class="flex flex-col space-y-2">
       <button
         v-for="tab in tabs"
@@ -17,20 +24,33 @@
         {{ tab.label }}
       </button>
     </nav>
-
-    <!--I remove radar and put it in Views-->
   </aside>
+
+    <!-- New: Overlay backdrop for mobile (closes sidebar when clicked) -->
+  <div 
+    v-if="mobileOpen" 
+    @click="$emit('close')"
+    class="fixed inset-0 bg-black/50 z-40 md:hidden"
+  ></div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from "vue"
 import { useRouter, useRoute } from "vue-router"
 
-// Added: Get router and route instances for navigation and route tracking
+// Receive the prop from App.vue
+defineProps({
+  mobileOpen: Boolean
+})
+
+//Define emits to tell App.vue to close the menu
+const emit = defineEmits(['close'])
+
+//Get router and route instances for navigation and route tracking
 const router = useRouter()
 const route = useRoute()
 
-// Added: Define navigation tabs with their corresponding route names
+// Define navigation tabs with their corresponding route names
 const tabs = [
   { key: "today", label: "Today", routeName: "today" },
   { key: "hourly", label: "Hourly", routeName: "hourly" },
@@ -38,21 +58,25 @@ const tabs = [
   { key: "radar", label: "Radar", routeName: "radar" }
 ]
 
-// Added: Computed property to get active tab based on current route name
+// Computed property to get active tab based on current route name
 const activeTab = computed(() => {
   const routeName = route.name
   const tab = tabs.find(t => t.routeName === routeName)
   return tab ? tab.key : "today"
 })
 
-// Added: Function to navigate to selected tab using Vue Router
+// Function to navigate to selected tab using Vue Router
 function selectTab(key) {
   const tab = tabs.find(t => t.key === key)
   if (tab) {
     // Get current city from route params or use default
     const city = route.params.city || "Monrovia"
+
     // Navigate to the selected route with city parameter
     router.push({ name: tab.routeName, params: { city } })
+
+        // Close sidebar on mobile after clicking a link
+    emit('close') 
   }
 }
 </script>

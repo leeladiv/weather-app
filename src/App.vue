@@ -5,9 +5,12 @@
 
     <!-- Body -->
     <div class="flex flex-1 overflow-hidden">
-      <!-- Added: Sidebar component for navigation between views -->
-      <sideBar />
-      <!-- Added: Router view to display the current route component (Today, Hourly, Monthly, or Radar) -->
+      <!--Sidebar component for navigation between views -->
+      <sideBar 
+      :mobileOpen="isSidebarOpen" 
+      @close="isSidebarOpen = false" />
+      
+      <!-- Router view to display the current route component (Today, Hourly, Monthly, or Radar) -->
       <router-view />
     </div>
   </div>
@@ -18,11 +21,14 @@ import { useRouter, useRoute } from "vue-router"
 import searchBar from "@/components/searchBar.vue"
 import sideBar from "@/components/sideBar.vue"
 
-// Added: Get router and route instances for navigation
+// Get router and route instances for navigation
 const router = useRouter()
 const route = useRoute()
 
-// Added: Handle city change by navigating to current route with new city parameter
+//Create state to track if sidebar is open
+const isSidebarOpen = ref(false);
+
+// Handle city change by navigating to current route with new city parameter
 const handleCityChange = (city) => {
   const cityParam = city || "Monrovia"
   // Navigate to current route with new city, or default to today if no route
